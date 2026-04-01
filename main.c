@@ -1,8 +1,14 @@
 #include "raylib.h"
-
 // nie mogę sie zdecydowac camalCase PascalCase snake_case :(
 // raylib ma PascalCase ja też powinieniem
-#define MIN(a, b) ((a) < (b) ? (a) : (b))
+
+
+  bool IsPressLimit(float time, float *CzasPrzytrzymania, double JumpPressStartTime ){  
+    *CzasPrzytrzymania = (float)GetTime() - JumpPressStartTime;
+    if (*CzasPrzytrzymania >= time) return true;
+    return false;
+  }
+
 
 int main(void)
 {
@@ -25,32 +31,11 @@ int main(void)
   bool IsJumping = false;
   bool IsHoldingJump = false;
 
-
   // MAIN GAME LOOP
   while (!WindowShouldClose())
   {
   //========================== LOGIKA ====================
-  if (IsKeyDown(KEY_SPACE) && !IsJumping ) {
-    JumpPressStartTime = GetTime();
-    IsHoldingJump = true;
-  }
-  if (IsKeyReleased(KEY_SPACE) && IsHoldingJump && !IsJumping){
-    CzasPrzytrzymania = (float)GetTime() - JumpPressStartTime;
-    CzasPrzytrzymania = MIN(CzasPrzytrzymania , 0.3f);
-    JumpForce = 600 + (2000 - 600) * (CzasPrzytrzymania / 0.3f);
-    VerticalVelocity = -JumpForce;
-    IsJumping = true;
-    IsHoldingJump = false;
-  }
-  if (IsJumping){
-    VerticalVelocity += Gravity * GetFrameTime();
-    Player_one_Position.y += VerticalVelocity * GetFrameTime();
-    if (Player_one_Position.y >= 300){
-      Player_one_Position.y = 300;
-      VerticalVelocity = 0;
-      IsJumping = false;
-    }
-  }
+
 
 
   //===================================== Drawing ================================
@@ -63,10 +48,7 @@ int main(void)
     DrawRectangleV(Ziemia, Rozmiar  , DARKGRAY );
 
     DrawText(TextFormat("Y Pos: %.0f", Player_one_Position.y), 10, 10, 20, BLACK);
-    DrawText(TextFormat("Velocity: %.0f", VerticalVelocity), 10, 35, 20, BLACK);
-    DrawText(TextFormat("Is Jumping: %s", IsJumping ? "YES" : "NO"), 10, 60, 20, BLACK);
-    DrawText(TextFormat("Hold Time: %.2f", CzasPrzytrzymania), 10, 85, 20, BLACK);
-    DrawText("Press and hold SPACE for higher jump!", 10, screenHeight - 30, 20, DARKGRAY);
+    // DrawText(TextFormat("Is Jumping: %s", IsJumping ? "YES" : "NO"), 10, 60, 20, BLACK);
  
 
   EndDrawing();
