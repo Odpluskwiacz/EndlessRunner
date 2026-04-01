@@ -32,9 +32,19 @@ int main(void)
   bool IsHoldingJump = false;
 
   // MAIN GAME LOOP
-  while (!WindowShouldClose())
-  {
+  while (!WindowShouldClose()){
   //========================== LOGIKA ====================
+  if(IsKeyDown(KEY_SPACE) && !IsHoldingJump){
+    JumpPressStartTime = GetTime();
+    IsHoldingJump = true;
+  }
+  if((IsKeyReleased(KEY_SPACE)) && IsHoldingJump){
+    IsHoldingJump = false;
+    CzasPrzytrzymania = GetTime() - JumpPressStartTime;
+    
+    // TODO ładny Postęp od tąd zaczynaj 
+    Player_one_Position.y -= 10 * CzasPrzytrzymania;
+  } 
 
 
 
@@ -48,6 +58,8 @@ int main(void)
     DrawRectangleV(Ziemia, Rozmiar  , DARKGRAY );
 
     DrawText(TextFormat("Y Pos: %.0f", Player_one_Position.y), 10, 10, 20, BLACK);
+    DrawText(TextFormat("JumpPressStartTime: %.02f", JumpPressStartTime), 10, 40, 20, BLACK);
+    DrawText(TextFormat("CzasPrzytrzymania: %.02f", CzasPrzytrzymania), 10, 60, 20, BLACK);
     // DrawText(TextFormat("Is Jumping: %s", IsJumping ? "YES" : "NO"), 10, 60, 20, BLACK);
  
 
