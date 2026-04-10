@@ -10,9 +10,11 @@
   }
 
 
+   
 int main(void)
 {
   const int screenWidth = 800;
+  Vector2 Player_one_Position = { (float)screenWidth / 5, 300};
   const int screenHeight = 450;
   const int PlayerSize = 50;
 
@@ -21,31 +23,31 @@ int main(void)
 
   Vector2 Ziemia = { 0,  (float)screenHeight / 1.5 + PlayerSize };
   Vector2 Rozmiar = { screenWidth, 100};
-  Vector2 Player_one_Position = { (float)screenWidth / 5, (float)screenHeight / 1.5};
 
-  double JumpPressStartTime;
-  float CzasPrzytrzymania;
-  float Gravity = 1000;
-  float VerticalVelocity;
-  float JumpForce;
-  bool IsJumping = false;
-  bool IsHoldingJump = false;
+  bool OnGround = true;
+  float Gravity = 4000;
+  float Velocity;
 
   // MAIN GAME LOOP
   while (!WindowShouldClose()){
   //========================== LOGIKA ====================
-  if(IsKeyDown(KEY_SPACE) && !IsHoldingJump){
-    JumpPressStartTime = GetTime();
-    IsHoldingJump = true;
-  }
-  if((IsKeyReleased(KEY_SPACE)) && IsHoldingJump){
-    IsHoldingJump = false;
-    CzasPrzytrzymania = GetTime() - JumpPressStartTime;
-    
-    // TODO ładny Postęp od tąd zaczynaj 
-    Player_one_Position.y -= 10 * CzasPrzytrzymania;
-  } 
 
+
+  //========================== LOGIKA - SKOK ============
+  if (IsKeyPressed(KEY_SPACE) && OnGround ){
+    Velocity = -1400;
+    OnGround = false;
+  }
+  //Opadanie
+  if(!OnGround) {
+    Velocity += Gravity * GetFrameTime(); // Grawitacja ciągnąca w dół
+    Player_one_Position.y += Velocity * GetFrameTime(); //Ruch na podstawie prędkości
+  }
+  if(Player_one_Position.y >= 300.0f){
+    Player_one_Position.y = 300;
+    Velocity = 0;
+    OnGround = true;
+  }
 
 
   //===================================== Drawing ================================
@@ -58,8 +60,8 @@ int main(void)
     DrawRectangleV(Ziemia, Rozmiar  , DARKGRAY );
 
     DrawText(TextFormat("Y Pos: %.0f", Player_one_Position.y), 10, 10, 20, BLACK);
-    DrawText(TextFormat("JumpPressStartTime: %.02f", JumpPressStartTime), 10, 40, 20, BLACK);
-    DrawText(TextFormat("CzasPrzytrzymania: %.02f", CzasPrzytrzymania), 10, 60, 20, BLACK);
+    DrawText(TextFormat("Velocity: %.02f", Velocity), 10, 40, 20, BLACK);
+    //DrawText(TextFormat("CzasPrzytrzymania: %.02f", CzasPrzytrzymania), 10, 60, 20, BLACK);
     // DrawText(TextFormat("Is Jumping: %s", IsJumping ? "YES" : "NO"), 10, 60, 20, BLACK);
  
 
