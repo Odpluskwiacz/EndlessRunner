@@ -1,22 +1,23 @@
 #include "raylib.h"
-// nie mogę sie zdecydowac camalCase PascalCase snake_case :(
-// raylib ma PascalCase ja też powinieniem
 
-
-  bool IsPressLimit(float time, float *CzasPrzytrzymania, double JumpPressStartTime ){  
-    *CzasPrzytrzymania = (float)GetTime() - JumpPressStartTime;
-    if (*CzasPrzytrzymania >= time) return true;
-    return false;
-  }
+// TODO BOX ENEMY further development
+// TODO SCORE = GAME TIME 
+// TODO BOX ENEMY SPEED == SCORE HIGHT 
 
 
    
 int main(void)
 {
   const int screenWidth = 800;
-  Vector2 Player_one_Position = { (float)screenWidth / 5, 300};
   const int screenHeight = 450;
-  const int PlayerSize = 50;
+  const int PlayerSize = 50; 
+
+  Vector2 BoxSize = { 50, 50 };
+  
+  
+
+  Vector2 Player_one_Position = { (float)screenWidth / 5, 300};
+  Vector2 BoxPosition = {  500, 300};
 
   InitWindow(screenWidth, screenHeight, "Endles Runner mutliplayer");
   SetTargetFPS(60);
@@ -48,6 +49,12 @@ int main(void)
     Velocity = 0;
     OnGround = true;
   }
+  //======================== LOGIKA - ENEMY BOX
+  BoxPosition.x -= 2;
+
+  if(BoxPosition.x < 0 - BoxSize.x){
+    BoxPosition.x = screenWidth;
+  }
 
 
   //===================================== Drawing ================================
@@ -56,12 +63,13 @@ int main(void)
     ClearBackground(RAYWHITE);
 
     DrawCircleV(Player_one_Position, PlayerSize, MAROON);
+    DrawRectangleV( BoxPosition, BoxSize , BLACK);
     
-    DrawRectangleV(Ziemia, Rozmiar  , DARKGRAY );
+    DrawRectangleV(Ziemia, Rozmiar, DARKGRAY );
 
     DrawText(TextFormat("Y Pos: %.0f", Player_one_Position.y), 10, 10, 20, BLACK);
     DrawText(TextFormat("Velocity: %.02f", Velocity), 10, 40, 20, BLACK);
-    //DrawText(TextFormat("CzasPrzytrzymania: %.02f", CzasPrzytrzymania), 10, 60, 20, BLACK);
+    DrawText(TextFormat("BoxPosition: %.1f", BoxPosition.x), 10, 60, 20, BLACK);
     // DrawText(TextFormat("Is Jumping: %s", IsJumping ? "YES" : "NO"), 10, 60, 20, BLACK);
  
 
