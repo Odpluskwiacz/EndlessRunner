@@ -5,7 +5,7 @@
 // TODO BOX ENEMY SPEED == SCORE HIGHT 
 
 
-   
+
 int main(void)
 {
   const int screenWidth = 800;
@@ -51,10 +51,22 @@ int main(void)
   }
   //======================== LOGIKA - ENEMY BOX
   BoxPosition.x -= 2;
-
   if(BoxPosition.x < 0 - BoxSize.x){
     BoxPosition.x = screenWidth;
   }
+
+  //========================= LOGIKA - SCORE COUNT
+  double Score = GetTime();
+
+  //========================= LOGIKA - COLISION BOX
+  bool IsCollision;
+  if(CheckCollisionPointCircle(BoxPosition, Player_one_Position, PlayerSize )){
+    IsCollision = true;
+  } else {
+    IsCollision = false;
+  }
+
+
 
 
   //===================================== Drawing ================================
@@ -70,7 +82,8 @@ int main(void)
     DrawText(TextFormat("Y Pos: %.0f", Player_one_Position.y), 10, 10, 20, BLACK);
     DrawText(TextFormat("Velocity: %.02f", Velocity), 10, 40, 20, BLACK);
     DrawText(TextFormat("BoxPosition: %.1f", BoxPosition.x), 10, 60, 20, BLACK);
-    // DrawText(TextFormat("Is Jumping: %s", IsJumping ? "YES" : "NO"), 10, 60, 20, BLACK);
+    DrawText(TextFormat("Is Collision: %s", IsCollision ? "YES" : "NO"), 10, 80, 20, BLACK);
+    DrawText(TextFormat("Score: %.0f", Score), screenWidth - 100, 10, 20, BLACK);
  
 
   EndDrawing();
