@@ -1,11 +1,15 @@
 #include "raylib.h"
 
+// TODO Zastanów się czy po Polsku czy angielsku, jeśli Angielsku to jak nadrobisz degradację Polskiego
+
 #define screenWidth 800
 #define screenHeight 450
 #define PlayerSize 50
 #define Gravity 4000
 
-// TODO GAME OVER
+// TODO BETER CONDITIONS FOR if GamePause 
+// TODO Random enemy timer spawner
+// TODO Random enemy Location spawner
 
 Vector2 BoxSize = { 50, 50 };
 Vector2 Player_one_Position = { (float)screenWidth / 5, 300};
@@ -15,22 +19,31 @@ Vector2 RozmiarPodloga = { screenWidth, 100};
 bool OnGround = true;
 float Velocity;
 bool GamePause = false;
-
+double Score;
+double GameStartOffset = 0;
 
 
 
 void GameOver(double Score){
-  // STOP PLAYER
+  // STOP PLAYER JUMP
   // STOP BOX 
   // STOP SCORE 
+ DrawText("GAME OVER", screenWidth/2, screenHeight/2 - 100, 50, BLACK);
  DrawText(TextFormat("Score: %.0f", Score), screenWidth/2, screenHeight/2, 50, BLACK);
+ DrawText("Press 'R' to restart", screenWidth/2, screenHeight/2 - 50, 25, BLACK);
  GamePause = true;
 };
 
-void StartGame(){
+void RestartGame(){
   // RESET PLAYER
+  Player_one_Position.x = (float)screenWidth / 5;
   // RESET BOX
+  BoxPosition.x = 500;
+  BoxPosition.y = 300;
   // RESET SCORE
+  GameStartOffset = GetTime();
+
+  GamePause = false;
 }
 
 
@@ -39,16 +52,17 @@ int main(void)
   InitWindow(screenWidth, screenHeight, "Endles Runner mutliplayer");
   SetTargetFPS(60);
 
+
   // MAIN GAME LOOP
   while (!WindowShouldClose()){
   //========================== LOGIKA ====================
   //========================== LOGIKA - SKOK ============
-  if (IsKeyDown(KEY_SPACE) && OnGround ){
+  if (IsKeyDown(KEY_SPACE) && OnGround  && !GamePause){
     Velocity = -1400;
     OnGround = false;
   }
   //========================== LOGIKA - Opadanie ========
-  if(!OnGround) {
+  if(!OnGround && !GamePause) {
     Velocity += Gravity * GetFrameTime(); // Grawitacja ciągnąca w dół
     Player_one_Position.y += Velocity * GetFrameTime(); //Ruch na podstawie prędkości
   }
@@ -57,10 +71,13 @@ int main(void)
     Velocity = 0;
     OnGround = true;
   }
+
   //========================= LOGIKA - SCORE COUNT
-  double Score = GetTime();
+  if(!GamePause) Score = GetTime() - GameStartOffset;
+
   //======================== LOGIKA - ENEMY BOX
-  BoxPosition.x -= 2 + Score/2;
+  if(!GamePause) BoxPosition.x -= 5 + Score/3;
+
   if(BoxPosition.x < 0 - BoxSize.x){
     BoxPosition.x = screenWidth;
   }
@@ -75,7 +92,8 @@ int main(void)
     IsCollision = false;
   }
 
-
+  //======================== LOGIKA - Restart Game
+  if(IsKeyPressed(KEY_R)) RestartGame();
 
   //===================================== Drawing ================================
   BeginDrawing();
