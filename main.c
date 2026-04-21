@@ -79,7 +79,9 @@ int main(void)
   if(!GamePause) BoxPosition.x -= 5 + Score/3;
 
   if(BoxPosition.x < 0 - BoxSize.x){
+
     BoxPosition.x = screenWidth;
+    BoxPosition.y = GetRandomValue(300 , 200);
   }
 
 
