@@ -8,8 +8,6 @@
 #define Gravity 4000
 
 // TODO BETER CONDITIONS FOR if GamePause 
-// TODO Random enemy timer spawner
-// TODO Random enemy Location spawner
 
 Vector2 BoxSize = { 50, 50 };
 Vector2 Player_one_Position = { (float)screenWidth / 5, 300};
@@ -77,11 +75,14 @@ int main(void)
 
   //======================== LOGIKA - ENEMY BOX
   if(!GamePause) BoxPosition.x -= 5 + Score/3;
-
+  
+  float BoxSpawnTime;
   if(BoxPosition.x < 0 - BoxSize.x){
-
+    BoxSpawnTime = Score + ((float)GetRandomValue(1, 25) / 10 ); // od 0.1 0.2 0.3 ... 2,48 2,49 2,5 sek
+  }
+  if(BoxSpawnTime >= Score ){
     BoxPosition.x = screenWidth;
-    BoxPosition.y = GetRandomValue(300 , 200);
+    BoxPosition.y = GetRandomValue(300 , 200); 
   }
 
 
@@ -111,7 +112,7 @@ int main(void)
     DrawText(TextFormat("Velocity: %.02f", Velocity), 10, 40, 20, BLACK);
     DrawText(TextFormat("BoxPosition: %.1f", BoxPosition.x), 10, 60, 20, BLACK);
     DrawText(TextFormat("Is Collision: %s", IsCollision ? "YES" : "NO"), 10, 80, 20, BLACK);
-    DrawText(TextFormat("Score: %.0f", Score), screenWidth - 100, 10, 20, BLACK);
+    DrawText(TextFormat("Score: %.3f", Score), screenWidth - 140, 10, 20, BLACK);
  
 
   EndDrawing();
