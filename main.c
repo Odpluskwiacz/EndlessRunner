@@ -76,13 +76,18 @@ int main(void)
   //======================== LOGIKA - ENEMY BOX
   if(!GamePause) BoxPosition.x -= 5 + Score/3;
   
+
+  // TODO bug po resecie klocki pojawiają się dopiero od przed zresetowanego score + Value
   float BoxSpawnTime;
+  bool BoxReset = false;
   if(BoxPosition.x < 0 - BoxSize.x){
-    BoxSpawnTime = Score + ((float)GetRandomValue(1, 25) / 10 ); // od 0.1 0.2 0.3 ... 2,48 2,49 2,5 sek
+    BoxSpawnTime = Score + ((float)GetRandomValue(1, 25) / 10 ); // 0.1 0.2 0.3 ... 2,48 2,49 2,5 sek
+    BoxReset = true;
   }
-  if(BoxSpawnTime >= Score ){
+  if(BoxSpawnTime > Score){
     BoxPosition.x = screenWidth;
     BoxPosition.y = GetRandomValue(300 , 200); 
+    BoxReset = false;
   }
 
 
