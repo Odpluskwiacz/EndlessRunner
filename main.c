@@ -1,6 +1,5 @@
 #include "raylib.h"
 
-// TODO Zastanów się czy po Polsku czy angielsku, jeśli Angielsku to jak nadrobisz degradację Polskiego
 
 #define screenWidth 800
 #define screenHeight 450
@@ -19,8 +18,12 @@ float Velocity;
 bool GamePause = false;
 double Score;
 double GameStartOffset = 0;
+bool BoxReset = false;
+bool GameFirstStart = true;
 
-
+void GameStart(){
+  GamePause = true;
+}
 
 void GameOver(double Score){
   // STOP PLAYER JUMP
@@ -50,14 +53,22 @@ int main(void)
   InitWindow(screenWidth, screenHeight, "Endles Runner mutliplayer");
   SetTargetFPS(60);
 
+  // LOAD SOUNDS
+  InitAudioDevice();
+  Sound jumpS = LoadSound("jump.wav");
+  Sound loseS = LoadSound("lose.wav");
 
   // MAIN GAME LOOP
   while (!WindowShouldClose()){
+
+
   //========================== LOGIKA ====================
   //========================== LOGIKA - SKOK ============
   if (IsKeyDown(KEY_SPACE) && OnGround  && !GamePause){
+    PlaySound(jumpS);
     Velocity = -1400;
     OnGround = false;
+    PlaySound(jumpS);
   }
   //========================== LOGIKA - Opadanie ========
   if(!OnGround && !GamePause) {
@@ -79,7 +90,6 @@ int main(void)
 
   // TODO bug po resecie klocki pojawiają się dopiero od przed zresetowanego score + Value
   float BoxSpawnTime;
-  bool BoxReset = false;
   if(BoxPosition.x < 0 - BoxSize.x){
     BoxSpawnTime = Score + ((float)GetRandomValue(1, 25) / 10 ); // 0.1 0.2 0.3 ... 2,48 2,49 2,5 sek
     BoxReset = true;
@@ -94,6 +104,7 @@ int main(void)
   //========================= LOGIKA - COLISION BOX
   bool IsCollision;
   if(CheckCollisionPointCircle(BoxPosition, Player_one_Position, PlayerSize )){
+    PlaySound(loseS);
     IsCollision = true;
     GameOver(Score);
   } else {
@@ -109,9 +120,13 @@ int main(void)
     ClearBackground(RAYWHITE);
 
     DrawCircleV(Player_one_Position, PlayerSize, MAROON);
-    DrawRectangleV( BoxPosition, BoxSize , BLACK);
+    DrawRectangleV(BoxPosition , BoxSize , BLACK);
     
     DrawRectangleV(Podloga, RozmiarPodloga, DARKGRAY );
+    for (int i = 0; i < 5; i++) {
+      DrawRectangleV((Vector2){BoxPosition.x + (i * 150), 380}, BoxSize , YELLOW);
+    }
+
 
     DrawText(TextFormat("Y Pos: %.0f", Player_one_Position.y), 10, 10, 20, BLACK);
     DrawText(TextFormat("Velocity: %.02f", Velocity), 10, 40, 20, BLACK);
@@ -122,6 +137,11 @@ int main(void)
 
   EndDrawing();
   }
+  
+  // CLOSING
+  UnloadSound(jumpS);
+  UnloadSound(loseS);
+  CloseAudioDevice();
   CloseWindow();
   return 0;
 }

@@ -1,14 +1,13 @@
 CC := gcc
 CFLAGS := -Wall -Wextra -Werror -Iinclude
 LDFLAGS := -Llib
-LDLIBS := -lraylib -lGl -lm -lpthread -ldl -lrt -lX11
+LDLIBS := -lraylib -lm -lpthread -ldl -lrt -lX11
 
 
 TARGET := main
 
 all:
 	$(CC) main.c -o $(TARGET) $(CFLAGS) $(LDFLAGS) $(LDLIBS)
-next: all
 	./main
 
 
