@@ -21,6 +21,8 @@ double GameStartOffset = 0;
 bool BoxReset = false;
 bool GameFirstStart = true;
 
+Sound loseS;
+
 void GameStart(){
   GamePause = true;
 }
@@ -55,12 +57,11 @@ int main(void)
 
   // LOAD SOUNDS
   InitAudioDevice();
-  Sound jumpS = LoadSound("jump.wav");
-  Sound loseS = LoadSound("lose.wav");
+  Sound jumpS = LoadSound("audio/jump.wav");
+  Sound loseS = LoadSound("audio/lose.wav");
 
   // MAIN GAME LOOP
   while (!WindowShouldClose()){
-
 
   //========================== LOGIKA ====================
   //========================== LOGIKA - SKOK ============
@@ -68,7 +69,6 @@ int main(void)
     PlaySound(jumpS);
     Velocity = -1400;
     OnGround = false;
-    PlaySound(jumpS);
   }
   //========================== LOGIKA - Opadanie ========
   if(!OnGround && !GamePause) {
@@ -103,16 +103,17 @@ int main(void)
 
   //========================= LOGIKA - COLISION BOX
   bool IsCollision;
-  if(CheckCollisionPointCircle(BoxPosition, Player_one_Position, PlayerSize )){
-    PlaySound(loseS);
+  if(CheckCollisionPointCircle(BoxPosition, Player_one_Position, PlayerSize)){
     IsCollision = true;
     GameOver(Score);
-  } else {
-    IsCollision = false;
-  }
+  } 
 
   //======================== LOGIKA - Restart Game
-  if(IsKeyPressed(KEY_R)) RestartGame();
+  if(IsKeyPressed(KEY_R)) {
+    IsCollision = false;
+    PlaySound(loseS);
+    RestartGame();
+  }
 
   //===================================== Drawing ================================
   BeginDrawing();
@@ -127,13 +128,11 @@ int main(void)
       DrawRectangleV((Vector2){BoxPosition.x + (i * 150), 380}, BoxSize , YELLOW);
     }
 
-
     DrawText(TextFormat("Y Pos: %.0f", Player_one_Position.y), 10, 10, 20, BLACK);
     DrawText(TextFormat("Velocity: %.02f", Velocity), 10, 40, 20, BLACK);
     DrawText(TextFormat("BoxPosition: %.1f", BoxPosition.x), 10, 60, 20, BLACK);
     DrawText(TextFormat("Is Collision: %s", IsCollision ? "YES" : "NO"), 10, 80, 20, BLACK);
-    DrawText(TextFormat("Score: %.3f", Score), screenWidth - 140, 10, 20, BLACK);
- 
+    DrawText(TextFormat("Score: %.3f", Score), screenWidth - 140, 10, 20, BLACK); 
 
   EndDrawing();
   }
